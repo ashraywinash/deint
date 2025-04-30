@@ -1,0 +1,17 @@
+Create a directory structure in HDFS
+hdfs dfs -mkdir /user
+hdfs dfs -mkdir /user/yourname
+hdfs dfs -mkdir /user/yourname/data
+
+
+Move a file from local UNIX/Linux machine to HDFS
+hdfs dfs -put sample.txt /user/yourname/data/
+
+Viewing Data Contents, Files and Directory
+hdfs dfs -ls /user/yourname/data
+
+View file content in HDFS
+hdfs dfs -cat /user/yourname/data/sample.txt
+
+Getting Files Data from HDFS to Local Disk
+hdfs dfs -get /user/yourname/data/sample.txt ./local_copy.txt

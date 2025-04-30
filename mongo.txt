@@ -1,0 +1,76 @@
+Create a New Database
+    use universityDB
+
+Create a Collection
+    db.createCollection("students")
+
+Insert Sample Documents
+    db.students.insertMany([
+            { name: "Alice", age: 20, dept: "CSE", enrolled: true, cgpa: 8.2 },
+            { name: "Bob", age: 22, dept: "ECE", enrolled: false, cgpa: 7.4 },
+            { name: "Charlie", age: 21, dept: "CSE", enrolled: true, cgpa: 9.1 }
+    ])
+
+View All Documents
+    db.students.find()
+
+Find Students with CGPA > 8
+    db.students.find({ cgpa: { $gt: 8 } })
+
+Find Students in CSE Department
+    db.students.find({ dept: "CSE" })
+
+Update a Student's CGPA
+    db.students.updateOne(
+        { name: "Bob" },
+        { $set: { cgpa: 7.9 } }
+    )
+
+Delete a Student Who is Not Enrolled
+    db.students.deleteOne({ enrolled: false })
+
+Add a New Field (Year) to All Documents
+    db.students.updateMany({}, { $set: { year: "Final" } })
+
+Count Number of Documents
+    db.students.countDocuments()
+
+Find a Student by Name (Exact Match)
+    db.students.find({ name: "Alice" })
+
+Find Students Aged Between 20 and 22
+    db.students.find({ age: { $gte: 20, $lte: 22 } })
+
+Sort Students by CGPA (Descending)
+    db.students.find().sort({ cgpa: -1 })
+
+Project Only Names and CGPAs (Exclude _id)
+    db.students.find({}, { name: 1, cgpa: 1, _id: 0 })
+
+Insert a Document with Nested Object
+    db.students.insertOne({
+    name: "David",
+    age: 23,
+    dept: "ME",
+    enrolled: true,
+    address: { city: "Hyderabad", pincode: 500001 }
+})
+
+Find Students from a Specific City (Nested Query)
+    db.students.find({ "address.city": "Hyderabad" })
+
+Group Students by Department and Count
+    db.students.aggregate([
+    { $group: { _id: "$dept", count: { $sum: 1 } } }
+])
+
+Find Students Who Have a CGPA Field
+    db.students.find({ cgpa: { $exists: true } })
+
+Drop the students Collection
+    db.students.drop()
+
+
+
+
+

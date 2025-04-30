@@ -1,0 +1,52 @@
+
+Create the Hive Table
+
+CREATE TABLE user_data (
+  data_date STRING,
+  user_id STRING,
+  properties STRING
+)
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY '\t'
+STORED AS TEXTFILE;
+
+
+Insert Into the Tables
+
+INSERT INTO TABLE user_data VALUES
+('2024-12-01', 'u001', 'Age=21;state=CA;gender=M;'),
+('2024-12-01', 'u002', 'Age=30;state=NY;gender=F;'),
+('2024-12-01', 'u003', 'Age=45;state=CA;gender=M;'),
+('2024-12-01', 'u004', 'Age=19;state=TX;gender=F;'),
+('2024-12-01', 'u005', 'Age=55;state=NY;gender=M;'),
+('2024-12-01', 'u006', 'Age=29;state=CA;gender=F;'),
+('2024-12-01', 'u007', 'Age=32;state=TX;gender=M;'),
+('2024-12-01', 'u008', 'Age=38;state=TX;gender=M;'),
+('2024-12-01', 'u009', 'Age=22;state=NY;gender=F;'),
+('2024-12-01', 'u010', 'Age=26;state=CA;gender=F;');
+
+Extract state from properties field
+SELECT 
+  regexp_extract(properties, 'state=([^;]+)', 1) AS state
+FROM user_data;
+
+Count per State
+SELECT 
+  regexp_extract(properties, 'state=([^;]+)', 1) AS state,
+  COUNT(*) AS state_count
+FROM user_data
+GROUP BY regexp_extract(properties, 'state=([^;]+)', 1);
+
+Minimum, Maximum Age, and Unique Count
+SELECT
+  MIN(CAST(regexp_extract(properties, 'Age=([0-9]+)', 1) AS INT)) AS min_age,
+  MAX(CAST(regexp_extract(properties, 'Age=([0-9]+)', 1) AS INT)) AS max_age,
+  COUNT(DISTINCT CAST(regexp_extract(properties, 'Age=([0-9]+)', 1) AS INT)) AS unique_age_count
+FROM user_data;
+
+Count Records per Gender
+SELECT 
+  regexp_extract(properties, 'gender=([MF])', 1) AS gender,
+  COUNT(*) AS gender_count
+FROM user_data
+GROUP BY regexp_extract(properties, 'gender=([MF])', 1);
