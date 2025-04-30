@@ -1,52 +1,130 @@
+Create database
+  create database emp_detail;
 
 Create the Hive Table
 
-CREATE TABLE user_data (
-  data_date STRING,
-  user_id STRING,
-  properties STRING
+CREATE TABLE employee (
+  emp_id STRING,
+  dept STRING,
+  designation STRING,
+  salary INT,
+  dno INT
 )
 ROW FORMAT DELIMITED
-FIELDS TERMINATED BY '\t'
+FIELDS TERMINATED BY ','
 STORED AS TEXTFILE;
+
 
 
 Insert Into the Tables
 
-INSERT INTO TABLE user_data VALUES
-('2024-12-01', 'u001', 'Age=21;state=CA;gender=M;'),
-('2024-12-01', 'u002', 'Age=30;state=NY;gender=F;'),
-('2024-12-01', 'u003', 'Age=45;state=CA;gender=M;'),
-('2024-12-01', 'u004', 'Age=19;state=TX;gender=F;'),
-('2024-12-01', 'u005', 'Age=55;state=NY;gender=M;'),
-('2024-12-01', 'u006', 'Age=29;state=CA;gender=F;'),
-('2024-12-01', 'u007', 'Age=32;state=TX;gender=M;'),
-('2024-12-01', 'u008', 'Age=38;state=TX;gender=M;'),
-('2024-12-01', 'u009', 'Age=22;state=NY;gender=F;'),
-('2024-12-01', 'u010', 'Age=26;state=CA;gender=F;');
+INSERT INTO TABLE employee VALUES
+('S1', 'A', 'clerk', 4000, 10),
+('2', 'A', 'clerk', 4000, 30),
+('3', 'B', 'mgr', 8000, 20),
+('4', 'C', 'peon', 2000, 40),
+('5', 'D', 'clerk', 4000, 10),
+('6', 'E', 'mgr', 8000, 50);
 
-Extract state from properties field
-SELECT 
-  regexp_extract(properties, 'state=([^;]+)', 1) AS state
-FROM user_data;
 
-Count per State
-SELECT 
-  regexp_extract(properties, 'state=([^;]+)', 1) AS state,
-  COUNT(*) AS state_count
-FROM user_data
-GROUP BY regexp_extract(properties, 'state=([^;]+)', 1);
+or 
 
-Minimum, Maximum Age, and Unique Count
-SELECT
-  MIN(CAST(regexp_extract(properties, 'Age=([0-9]+)', 1) AS INT)) AS min_age,
-  MAX(CAST(regexp_extract(properties, 'Age=([0-9]+)', 1) AS INT)) AS max_age,
-  COUNT(DISTINCT CAST(regexp_extract(properties, 'Age=([0-9]+)', 1) AS INT)) AS unique_age_count
-FROM user_data;
+create 'employee.txt' file (have comma separated values on each line)
 
-Count Records per Gender
-SELECT 
-  regexp_extract(properties, 'gender=([MF])', 1) AS gender,
-  COUNT(*) AS gender_count
-FROM user_data
-GROUP BY regexp_extract(properties, 'gender=([MF])', 1);
+LOAD DATA INPATH '/path/to/employee.txt' INTO TABLE employee;
+
+to know the structure of employee
+  describe employee
+
+
+1. **Enter Hive Shell:**
+
+   hive
+
+   _Starts the Hive command-line interface (CLI)._
+
+2. **Create a database:**
+
+   create database emp_detail;
+   use emp_detail;
+
+   _Creates and switches to a new database named `emp_detail`._
+
+3. **Create a table:**
+
+   create table emp(id int, ename string, job string, sal int, deptno int) row format delimited fields terminated by ',' stored as textfile;
+
+   _Defines a table `emp` with fields separated by commas._
+
+4. **Load data into table (with file):**
+
+   load data local inpath 'employee.txt' into table emp;
+
+   _Loads data from a local file into the `emp` table._
+
+5. **Select all employee names:**
+
+   select ename from emp;
+
+   _Displays all employee names from the `emp` table._
+
+6. **Select rows with name 'A':**
+
+   select * from emp where ename='A';
+
+   _Fetches all records where `ename` is 'A'._
+
+7. **Count number of records:**
+
+   select count(*) from emp;
+
+   _Returns the total number of records in the table._
+
+8. **Group salaries by department:**
+
+   select deptno, sum(sal) from emp group by deptno;
+
+   _Shows total salary grouped by department._
+
+9. **Select salary range between 2000 and 5000:**
+
+   select * from emp where sal between 2000 and 5000;
+
+   _Fetches employees with salaries between 2000 and 5000._
+
+10. **Job title of exactly 5 characters:**
+
+   select ename from emp where job LIKE '_____';
+
+   _Finds employees where the `job` has exactly 5 characters._
+
+11. **Job with 'l' as second character:**
+
+   select ename from emp where job LIKE '_l%';
+
+   _Finds names of employees whose job has 'l' as the second character._
+
+12. **Total salary per department:**
+
+   select deptno, sum(sal) from emp group by deptno;
+
+   _(Repeated) Displays sum of salaries per department._
+
+13. **Add a column:**
+
+   alter table emp add columns(lastname string);
+
+   _Adds a new column `lastname` to the `emp` table._
+
+14. **Rename the table:**
+
+   alter table emp rename to emp1;
+
+   _Renames the table from `emp` to `emp1`._
+
+15. **Drop the table:**
+
+   drop table emp;
+
+   _Deletes the table `emp` from the database._
+
